@@ -95,10 +95,12 @@ mod tests {
         let mut b = RecallRecord::new_for(QuestionId::new("b"), t);
         a.update(true, t);
         b.update(true, t);
-        let due = due_now(&[a.clone(), b.clone()], t);
+        let recs = vec![a.clone(), b.clone()];
+        let due = due_now(&recs, t);
         assert!(due.is_empty(), "freshly-correct records should not be due immediately");
         let later = t + Duration::hours(48);
-        let due = due_now(&[a, b], later);
+        let recs = vec![a, b];
+        let due = due_now(&recs, later);
         assert_eq!(due.len(), 2);
     }
 }
