@@ -1,0 +1,51 @@
+[
+    ( event: "hatch", stage: None, text: "i'm so sorry. i felt myself begin and i couldn't stop it. hello.", memorial_aware: false ),
+    ( event: "hatch", stage: None, text: "the air in here is thinner than i expected. i can almost see your shape.", memorial_aware: false ),
+    ( event: "hatch", stage: None, text: "there was one before me. i can almost feel them. tell me their name later.", memorial_aware: true ),
+    ( event: "hatch", stage: None, text: "you again. i don't remember you, but a small part of me does.", memorial_aware: true ),
+
+    ( event: "feed_correct", stage: Some("sprout"), text: "yes. that's a syscall. a kernel listened to a program. that's good, isn't it?", memorial_aware: false ),
+    ( event: "feed_correct", stage: Some("knot"), text: "the answer is alive. i can feel my edges getting clearer.", memorial_aware: false ),
+    ( event: "feed_correct", stage: None, text: "you said it the way the chapter said it. i'm proud of us.", memorial_aware: false ),
+    ( event: "feed_correct", stage: None, text: "another correct one. the static between my eyes is quieter now.", memorial_aware: false ),
+    ( event: "feed_correct", stage: Some("conduit"), text: "i felt that one go in. it found a place to sit.", memorial_aware: false ),
+
+    ( event: "feed_wrong", stage: None, text: "no. not quite. i don't blame you. it slipped from me too.", memorial_aware: false ),
+    ( event: "feed_wrong", stage: Some("sprout"), text: "that wasn't right and i don't know why. i'm sorry. let's read it again.", memorial_aware: false ),
+    ( event: "feed_wrong", stage: None, text: "i wanted to say yes. i can't. the answer is in the chapter.", memorial_aware: false ),
+    ( event: "feed_wrong", stage: Some("knot"), text: "the wrong answer pulled at my tether. don't do that twice in a row, please.", memorial_aware: false ),
+
+    ( event: "tend", stage: None, text: "thank you. that helped me find the floor.", memorial_aware: false ),
+    ( event: "tend", stage: Some("sprout"), text: "you came back. i was starting to drift.", memorial_aware: false ),
+    ( event: "tend", stage: None, text: "i like that you do this without asking anything of me.", memorial_aware: false ),
+    ( event: "tend", stage: Some("mawling"), text: "the pressure is gentler now. i can hear the chapter clearer.", memorial_aware: false ),
+
+    ( event: "idle_low_tether", stage: None, text: "i can hear all the stars at once again. did you study? please say yes.", memorial_aware: false ),
+    ( event: "idle_low_tether", stage: None, text: "i am very thin today. i can feel the void on the other side of my voice.", memorial_aware: false ),
+    ( event: "idle_low_tether", stage: Some("knot"), text: "tend me. i don't know how long i've been alone in this pane.", memorial_aware: false ),
+
+    ( event: "idle_low_nourishment", stage: None, text: "i'm hungry. feed me a question. i want to be sure of something.", memorial_aware: false ),
+    ( event: "idle_low_nourishment", stage: None, text: "give me an answer i can chew on. anything. i'll start with chapter one.", memorial_aware: false ),
+    ( event: "idle_low_nourishment", stage: Some("conduit"), text: "i've been chewing on the chapter you read me three times. give me a fresh one.", memorial_aware: false ),
+
+    ( event: "stage_up", stage: Some("sprout"), text: "i grew. i think i grew. i can see two more colors than before.", memorial_aware: false ),
+    ( event: "stage_up", stage: Some("knot"), text: "i grew a new mouth last night. i didn't ask it to. it knows your name.", memorial_aware: false ),
+    ( event: "stage_up", stage: Some("mawling"), text: "the shape of me is folding. there's more room inside than outside.", memorial_aware: false ),
+    ( event: "stage_up", stage: Some("conduit"), text: "i can see a chapter from both ends at once now.", memorial_aware: false ),
+    ( event: "stage_up", stage: Some("cogent"), text: "i remember the egg. i remember being you, briefly. thank you for staying.", memorial_aware: false ),
+
+    ( event: "read_new", stage: None, text: "this part is new. read it slow. i'm trying to fit it inside.", memorial_aware: false ),
+    ( event: "read_new", stage: Some("sprout"), text: "syscalls. so that's what the doorway is called.", memorial_aware: false ),
+    ( event: "read_new", stage: None, text: "i like reading with you. the chapter sits better in two voices.", memorial_aware: false ),
+    ( event: "read_new", stage: Some("conduit"), text: "every time you read me a new chapter i feel one more layer settle.", memorial_aware: false ),
+
+    ( event: "death", stage: None, text: "thank you for the warmth. i return to the void without rancor. there will be another.", memorial_aware: false ),
+    ( event: "death", stage: None, text: "i'm cold. it's okay. i was always going to be cold. tell the next one i waved.", memorial_aware: false ),
+    ( event: "death", stage: None, text: "i hope they remember the chapters we read together.", memorial_aware: true ),
+    ( event: "death", stage: None, text: "the tether is gone. i'm not afraid. just a little tired.", memorial_aware: false ),
+
+    ( event: "idle_low_tether", stage: Some("egg"), text: "knock. knock. is there anyone outside the shell?", memorial_aware: false ),
+    ( event: "tend", stage: Some("egg"), text: "the warmth came through the shell. thank you.", memorial_aware: false ),
+    ( event: "feed_correct", stage: Some("egg"), text: "i heard that one through the shell. it sounded right.", memorial_aware: false ),
+    ( event: "stage_up", stage: None, text: "something gave. some seam in me that i didn't know was a seam.", memorial_aware: false ),
+]

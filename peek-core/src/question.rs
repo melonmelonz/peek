@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::ops::RangeInclusive;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct QuestionId(pub String);
 
 impl QuestionId {
@@ -23,6 +24,7 @@ impl From<String> for QuestionId {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Difficulty(pub u8);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
