@@ -44,6 +44,46 @@ impl Stage {
             Stage::Cogent => "cogent",
         }
     }
+
+    /// Engagement gates required to advance from this stage to the next.
+    /// Egg never advances via this path (hatch is its own ceremony).
+    /// Cogent is terminal.
+    pub fn advance_gate(self) -> Option<AdvanceGate> {
+        match self {
+            Stage::Egg => None,
+            Stage::Sprout => Some(AdvanceGate {
+                recalls: 5,
+                chapters: 1,
+                min_avg_stat: 0.50,
+            }),
+            Stage::Knot => Some(AdvanceGate {
+                recalls: 12,
+                chapters: 3,
+                min_avg_stat: 0.55,
+            }),
+            Stage::Mawling => Some(AdvanceGate {
+                recalls: 25,
+                chapters: 6,
+                min_avg_stat: 0.60,
+            }),
+            Stage::Conduit => Some(AdvanceGate {
+                recalls: 50,
+                chapters: 10,
+                min_avg_stat: 0.65,
+            }),
+            Stage::Cogent => None,
+        }
+    }
+}
+
+/// Engagement criteria for crossing a stage boundary. The creature must
+/// have answered enough questions correctly, read enough chapters, and
+/// be sufficiently cared-for (average stat across the three pillars).
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct AdvanceGate {
+    pub recalls: u32,
+    pub chapters: usize,
+    pub min_avg_stat: f64,
 }
 
 #[cfg(test)]

@@ -31,6 +31,11 @@ impl Stats {
     pub fn all_zero(&self) -> bool {
         self.nourishment <= 0.0 && self.tether <= 0.0 && self.lucidity <= 0.0
     }
+
+    /// Average across the three pillars; used by the stage-advance gate.
+    pub fn avg(&self) -> f32 {
+        (self.nourishment + self.tether + self.lucidity) / 3.0
+    }
 }
 
 #[cfg(test)]

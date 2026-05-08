@@ -9,9 +9,11 @@ use crate::app::App;
 use crate::input::InputEvent;
 use crate::scene::{Scene, SceneAction, SceneId};
 use crate::scenes::{
-    quiz::QuizMode, DeathScene, DemoScene, HatchScene, IdleScene, IntroScene, QuizScene, ReadScene,
+    quiz::QuizMode, DeathScene, DemoScene, EvolveScene, HatchScene, IdleScene, IntroScene,
+    QuizScene, ReadScene,
 };
 use crate::theme::Theme;
+use peek_core::Stage;
 use ratatui::layout::Rect;
 use ratatui::Frame;
 
@@ -73,5 +75,13 @@ pub fn build_scene(id: SceneId, theme: Theme, app: &mut App) -> Box<dyn Scene> {
         SceneId::Read => Box::new(ReadScene::new(theme, app)),
         SceneId::Death => Box::new(DeathScene::new(theme, app)),
         SceneId::Demo => Box::new(DemoScene::new(theme, app)),
+        // Evolve needs from/to stages; SceneAction::Goto can't carry them.
+        // Constructed directly via `replace_scene` from the place that
+        // detects the advance (idle.rs / native loop / web loop). If we
+        // ever land here through Goto, fall back to a no-op transition.
+        SceneId::Evolve => {
+            let s = app.creature().map(|c| c.stage).unwrap_or(Stage::Sprout);
+            Box::new(EvolveScene::new(theme, s, s))
+        }
     }
 }

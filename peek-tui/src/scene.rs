@@ -14,6 +14,7 @@ pub enum SceneId {
     Read,
     Death,
     Demo,
+    Evolve,
 }
 
 pub enum SceneAction {

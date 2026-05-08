@@ -14,7 +14,7 @@ use peek_tui::{
     input::{InputEvent, Key},
     scene::SceneId,
     scene_runner::{build_scene, RunnerOutcome, SceneRunner},
-    scenes::DeathScene,
+    scenes::{DeathScene, EvolveScene},
     theme::Theme,
 };
 use rand::Rng;
@@ -131,9 +131,16 @@ fn boot() -> anyhow::Result<()> {
             s.last_decay_ms = now;
             let now_dt = Utc::now();
             let mut just_died = false;
+            let mut advanced_to = None;
+            let mut from_stage = None;
             if let Some(c) = s.app.creature_mut() {
+                let prior = c.stage;
                 let out = c.tick(now_dt);
                 just_died = out.died;
+                if out.advanced {
+                    advanced_to = Some(c.stage);
+                    from_stage = Some(prior);
+                }
             }
             if just_died && s.runner.scene_id() != SceneId::Death {
                 s.app.say("death");
@@ -141,6 +148,14 @@ fn boot() -> anyhow::Result<()> {
                 let scene: Box<dyn peek_tui::scene::Scene> =
                     Box::new(DeathScene::new(theme, &s.app));
                 s.runner.replace_scene(scene);
+            } else if let (Some(to), Some(from)) = (advanced_to, from_stage) {
+                if s.runner.scene_id() == SceneId::Idle {
+                    s.app.say("stage_up");
+                    let theme = s.theme;
+                    let scene: Box<dyn peek_tui::scene::Scene> =
+                        Box::new(EvolveScene::new(theme, from, to));
+                    s.runner.replace_scene(scene);
+                }
             }
             save_state(&s.app.state);
         }

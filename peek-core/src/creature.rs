@@ -89,7 +89,8 @@ impl Creature {
     }
 
     /// Apply wall-clock decay since `last_tick`. Updates `mood` and detects
-    /// the death floor.
+    /// the death floor. If the engagement gate for the current stage is
+    /// satisfied, advance to the next stage and report it.
     pub fn tick(&mut self, now: DateTime<Utc>) -> TickOutcome {
         let elapsed = now
             .signed_duration_since(self.last_tick)
@@ -106,10 +107,27 @@ impl Creature {
             false
         };
 
+        // Auto-advance: don't outrun a death; the death scene wins.
+        let advanced = if !died { self.try_advance(now) } else { false };
+
         self.refresh_mood(now);
-        TickOutcome {
-            died,
-            advanced: false,
+        TickOutcome { died, advanced }
+    }
+
+    /// Check the gate for the current stage and advance if satisfied.
+    /// Returns `true` only on the tick that crossed the boundary.
+    pub fn try_advance(&mut self, now: DateTime<Utc>) -> bool {
+        let Some(gate) = self.stage.advance_gate() else {
+            return false;
+        };
+        let avg = self.stats.avg() as f64;
+        if self.correct_recalls >= gate.recalls
+            && self.chapters_read.len() >= gate.chapters
+            && avg >= gate.min_avg_stat
+        {
+            self.advance_stage(now)
+        } else {
+            false
         }
     }
 }

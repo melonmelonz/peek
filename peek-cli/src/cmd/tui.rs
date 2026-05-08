@@ -12,7 +12,7 @@ use peek_tui::{
     input::{InputEvent, Key},
     scene::SceneId,
     scene_runner::{build_scene, RunnerOutcome, SceneRunner},
-    scenes::DeathScene,
+    scenes::{DeathScene, EvolveScene},
     theme::Theme,
 };
 use rand::Rng;
@@ -112,11 +112,25 @@ fn run_loop(
             let now = Utc::now();
             if (now - last_decay).num_seconds() >= 60 {
                 last_decay = now;
+                let mut died = false;
+                let mut advanced_to = None;
+                let mut from_stage = None;
                 if let Some(c) = app.creature_mut() {
+                    let prior = c.stage;
                     let out = c.tick(now);
-                    if out.died && runner.scene_id() != SceneId::Death {
-                        app.say("death");
-                        runner.replace_scene(Box::new(DeathScene::new(theme, app)));
+                    died = out.died;
+                    if out.advanced {
+                        advanced_to = Some(c.stage);
+                        from_stage = Some(prior);
+                    }
+                }
+                if died && runner.scene_id() != SceneId::Death {
+                    app.say("death");
+                    runner.replace_scene(Box::new(DeathScene::new(theme, app)));
+                } else if let (Some(to), Some(from)) = (advanced_to, from_stage) {
+                    if runner.scene_id() == SceneId::Idle {
+                        app.say("stage_up");
+                        runner.replace_scene(Box::new(EvolveScene::new(theme, from, to)));
                     }
                 }
                 let _ = app.save();

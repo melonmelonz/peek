@@ -134,6 +134,9 @@ impl Scene for IdleScene {
             row("[r]", "read a chapter together", key_style),
             row("[z]", "drill (procedurally generated)", key_style),
             Line::from(""),
+            row("[d]", "demo (cycle stages, no save)", key_style),
+            row("[i]", "replay intro", key_style),
+            Line::from(""),
             row("[?]", "help", dim_style),
             row("[Q]", "quit", dim_style),
         ];
@@ -150,6 +153,6 @@ impl Scene for IdleScene {
         );
         frame.render_widget(menu, body_chunks[1]);
 
-        render_footer(frame, footer, &self.theme, app, "f t r z ? Q");
+        render_footer(frame, footer, &self.theme, app, "f t r z d i ? Q");
     }
 }
