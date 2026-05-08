@@ -70,7 +70,9 @@ impl Question {
     pub fn evaluate(&self, answer: &str) -> AttemptResult {
         let trimmed = answer.trim();
         let correct = match &self.kind {
-            QuestionKind::MultipleChoice { options, correct, .. } => {
+            QuestionKind::MultipleChoice {
+                options, correct, ..
+            } => {
                 let lower = trimmed.to_ascii_lowercase();
                 let idx = if let Some(c) = lower.chars().next() {
                     if c.is_ascii_alphabetic() {
@@ -83,21 +85,31 @@ impl Question {
                 } else {
                     None
                 };
-                idx.map(|i| i < options.len() && i as u8 == *correct).unwrap_or(false)
+                idx.map(|i| i < options.len() && i as u8 == *correct)
+                    .unwrap_or(false)
             }
             QuestionKind::FillBlank { accept, .. } => {
                 let lower = trimmed.to_ascii_lowercase();
-                accept.iter().any(|a| a.trim().to_ascii_lowercase() == lower)
+                accept
+                    .iter()
+                    .any(|a| a.trim().to_ascii_lowercase() == lower)
             }
-            QuestionKind::ShortNumeric { accept_min, accept_max, .. } => trimmed
+            QuestionKind::ShortNumeric {
+                accept_min,
+                accept_max,
+                ..
+            } => trimmed
                 .parse::<f64>()
                 .map(|v| Self::range(*accept_min, *accept_max).contains(&v))
                 .unwrap_or(false),
-            QuestionKind::TraceProgram { expected_output, .. } => {
-                trimmed == expected_output.trim()
-            }
+            QuestionKind::TraceProgram {
+                expected_output, ..
+            } => trimmed == expected_output.trim(),
         };
-        AttemptResult { correct, reveal: self.explanation.clone() }
+        AttemptResult {
+            correct,
+            reveal: self.explanation.clone(),
+        }
     }
 
     fn range(lo: f64, hi: f64) -> RangeInclusive<f64> {

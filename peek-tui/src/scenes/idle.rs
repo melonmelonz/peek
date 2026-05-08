@@ -45,9 +45,8 @@ impl Scene for IdleScene {
                 }
                 KeyCode::Char('r') => return SceneAction::Goto(SceneId::Read),
                 KeyCode::Char('?') => {
-                    app.current_dialogue = Some(
-                        "f feed quiz   t tend   r read   z drill   q/Q quit".into(),
-                    );
+                    app.current_dialogue =
+                        Some("f feed quiz   t tend   r read   z drill   q/Q quit".into());
                 }
                 _ => {}
             }
@@ -97,13 +96,16 @@ impl Scene for IdleScene {
                 mutations: &c.mutations,
                 sprite_text,
                 theme: self.theme,
+                frame_idx: app.frame_idx,
             };
             let block = Block::default()
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(self.theme.dim))
                 .title(Span::styled(
                     " creature ",
-                    Style::default().fg(self.theme.accent_pink).add_modifier(Modifier::BOLD),
+                    Style::default()
+                        .fg(self.theme.accent_pink)
+                        .add_modifier(Modifier::BOLD),
                 ));
             let inner = block.inner(body_chunks[0]);
             frame.render_widget(block, body_chunks[0]);
@@ -114,12 +116,18 @@ impl Scene for IdleScene {
         let key_style = Style::default().fg(self.theme.accent_cyan);
         let dim_style = Style::default().fg(self.theme.dim);
         let row = |key: &'static str, label: &'static str, style: Style| -> Line<'static> {
-            Line::from(vec![Span::styled(key, style), Span::raw(" "), Span::raw(label)])
+            Line::from(vec![
+                Span::styled(key, style),
+                Span::raw(" "),
+                Span::raw(label),
+            ])
         };
         let lines = vec![
             Line::from(Span::styled(
                 "tend the creature",
-                Style::default().fg(self.theme.accent_violet).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(self.theme.accent_violet)
+                    .add_modifier(Modifier::BOLD),
             )),
             Line::from(""),
             row("[f]", "feed it a question", key_style),
@@ -136,7 +144,9 @@ impl Scene for IdleScene {
                 .border_style(Style::default().fg(self.theme.dim))
                 .title(Span::styled(
                     " care ",
-                    Style::default().fg(self.theme.accent_mint).add_modifier(Modifier::BOLD),
+                    Style::default()
+                        .fg(self.theme.accent_mint)
+                        .add_modifier(Modifier::BOLD),
                 )),
         );
         frame.render_widget(menu, body_chunks[1]);

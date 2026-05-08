@@ -70,8 +70,14 @@ impl QuizScene {
 
         if let Some(c) = app.creature_mut() {
             let care = match self.mode {
-                QuizMode::Feed => CareAction::Feed { result: result.clone(), was_new: self.was_new },
-                QuizMode::Drill => CareAction::Quiz { result: result.clone(), was_new: self.was_new },
+                QuizMode::Feed => CareAction::Feed {
+                    result: result.clone(),
+                    was_new: self.was_new,
+                },
+                QuizMode::Drill => CareAction::Quiz {
+                    result: result.clone(),
+                    was_new: self.was_new,
+                },
             };
             apply_care(c, care);
         }
@@ -90,7 +96,11 @@ impl QuizScene {
             }
         }
 
-        let event = if correct { "feed_correct" } else { "feed_wrong" };
+        let event = if correct {
+            "feed_correct"
+        } else {
+            "feed_wrong"
+        };
         app.say(event);
         let _ = app.save();
     }
@@ -108,8 +118,12 @@ fn pick_question(app: &mut App, mode: QuizMode) -> (Option<Question>, bool) {
                 let q = app.questions.iter().find(|q| q.id == id).cloned();
                 return (q, false);
             }
-            let seen: std::collections::HashSet<_> =
-                app.state.recall.iter().map(|r| r.question.clone()).collect();
+            let seen: std::collections::HashSet<_> = app
+                .state
+                .recall
+                .iter()
+                .map(|r| r.question.clone())
+                .collect();
             let candidates: Vec<&Question> = app
                 .questions
                 .iter()
@@ -155,7 +169,8 @@ impl Scene for QuizScene {
                         self.input.push(c);
                     }
                 }
-                (Phase::Resolved { .. }, KeyCode::Enter) | (Phase::Resolved { .. }, KeyCode::Char(' ')) => {
+                (Phase::Resolved { .. }, KeyCode::Enter)
+                | (Phase::Resolved { .. }, KeyCode::Char(' ')) => {
                     return SceneAction::Goto(SceneId::Idle);
                 }
                 _ => {}
@@ -177,7 +192,9 @@ impl Scene for QuizScene {
                     QuizMode::Feed => " feed ",
                     QuizMode::Drill => " drill ",
                 },
-                Style::default().fg(self.theme.accent_pink).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(self.theme.accent_pink)
+                    .add_modifier(Modifier::BOLD),
             ));
         let inner = block.inner(body);
         frame.render_widget(block, body);
@@ -191,13 +208,18 @@ impl Scene for QuizScene {
                 )));
             }
             Some(q) => match &q.kind {
-                QuestionKind::MultipleChoice { prompt, options, .. } => {
+                QuestionKind::MultipleChoice {
+                    prompt, options, ..
+                } => {
                     lines.push(wrap_line(prompt, self.theme.fg));
                     lines.push(Line::from(""));
                     for (i, opt) in options.iter().enumerate() {
                         let letter = ((b'a' + i as u8) as char).to_string();
                         lines.push(Line::from(vec![
-                            Span::styled(format!("[{letter}] "), Style::default().fg(self.theme.accent_cyan)),
+                            Span::styled(
+                                format!("[{letter}] "),
+                                Style::default().fg(self.theme.accent_cyan),
+                            ),
                             Span::raw(opt.clone()),
                         ]));
                     }
@@ -210,10 +232,15 @@ impl Scene for QuizScene {
                 }
                 QuestionKind::TraceProgram { source, .. } => {
                     for line in source.lines() {
-                        lines.push(Line::from(Span::styled(line.to_string(), Style::default().fg(self.theme.accent_mint))));
+                        lines.push(Line::from(Span::styled(
+                            line.to_string(),
+                            Style::default().fg(self.theme.accent_mint),
+                        )));
                     }
                     lines.push(Line::from(""));
-                    lines.push(Line::from("what does this print? (one line per output line)"));
+                    lines.push(Line::from(
+                        "what does this print? (one line per output line)",
+                    ));
                 }
             },
         }
@@ -221,15 +248,32 @@ impl Scene for QuizScene {
         lines.push(Line::from(""));
         lines.push(Line::from(vec![
             Span::styled("> ", Style::default().fg(self.theme.accent_violet)),
-            Span::styled(self.input.clone(), Style::default().fg(self.theme.fg).add_modifier(Modifier::BOLD)),
-            Span::styled("_", Style::default().fg(self.theme.accent_pink).add_modifier(Modifier::SLOW_BLINK)),
+            Span::styled(
+                self.input.clone(),
+                Style::default()
+                    .fg(self.theme.fg)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "_",
+                Style::default()
+                    .fg(self.theme.accent_pink)
+                    .add_modifier(Modifier::SLOW_BLINK),
+            ),
         ]));
 
         if let Phase::Resolved { correct } = self.phase {
             lines.push(Line::from(""));
             let label = if correct { "yes." } else { "not quite." };
-            let color = if correct { self.theme.accent_mint } else { self.theme.warn };
-            lines.push(Line::from(Span::styled(label.to_string(), Style::default().fg(color).add_modifier(Modifier::BOLD))));
+            let color = if correct {
+                self.theme.accent_mint
+            } else {
+                self.theme.warn
+            };
+            lines.push(Line::from(Span::styled(
+                label.to_string(),
+                Style::default().fg(color).add_modifier(Modifier::BOLD),
+            )));
             lines.push(Line::from(""));
             lines.push(wrap_line(&self.reveal, self.theme.fg));
             lines.push(Line::from(""));
@@ -242,7 +286,13 @@ impl Scene for QuizScene {
         let p = Paragraph::new(lines).wrap(Wrap { trim: false });
         frame.render_widget(p, inner);
 
-        render_footer(frame, footer, &self.theme, app, "enter submit   esc back   Q quit");
+        render_footer(
+            frame,
+            footer,
+            &self.theme,
+            app,
+            "enter submit   esc back   Q quit",
+        );
     }
 }
 

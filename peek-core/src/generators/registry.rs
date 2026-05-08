@@ -20,7 +20,10 @@ pub struct GeneratorRegistry {
 
 impl GeneratorRegistry {
     pub fn new() -> Self {
-        Self { gens: Vec::new(), cursor: std::cell::Cell::new(0) }
+        Self {
+            gens: Vec::new(),
+            cursor: std::cell::Cell::new(0),
+        }
     }
 
     pub fn register(&mut self, gen: Box<dyn QuestionGenerator>) {

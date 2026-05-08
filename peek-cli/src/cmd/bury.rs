@@ -17,7 +17,10 @@ pub fn run() -> anyhow::Result<()> {
     let mut tickable = c.clone();
     tickable.tick(now);
     if !tickable.stats.all_zero() {
-        println!("peek: {} is still tethered. you can only bury when it has returned to the void.", c.true_name);
+        println!(
+            "peek: {} is still tethered. you can only bury when it has returned to the void.",
+            c.true_name
+        );
         return Ok(());
     }
     let m = Memorial {
@@ -32,8 +35,14 @@ pub fn run() -> anyhow::Result<()> {
     append(&memorial_path, m)?;
     let seed: u64 = rand::thread_rng().gen();
     state.creature = Some(Creature::hatch(now, seed));
-    state.save(&path).map_err(|e| anyhow::anyhow!("save: {e}"))?;
-    let new_name = state.creature.as_ref().map(|c| c.true_name.as_str()).unwrap_or("?");
+    state
+        .save(&path)
+        .map_err(|e| anyhow::anyhow!("save: {e}"))?;
+    let new_name = state
+        .creature
+        .as_ref()
+        .map(|c| c.true_name.as_str())
+        .unwrap_or("?");
     println!(
         "peek: buried {}. a fresh egg appears. it calls itself {new_name}.",
         c.true_name,

@@ -26,7 +26,14 @@ pub struct ReadScene {
 impl ReadScene {
     pub fn new(theme: Theme, app: &App) -> Self {
         let (chapter, text, seen_before) = pick_chapter(app);
-        Self { theme, chapter, text, seen_before, scroll: 0, finished: false }
+        Self {
+            theme,
+            chapter,
+            text,
+            seen_before,
+            scroll: 0,
+            finished: false,
+        }
     }
 }
 
@@ -53,7 +60,10 @@ fn pick_chapter(app: &App) -> (Option<ChapterId>, String, bool) {
         return ((*id).clone().into(), text, false);
     }
     let id = ids.first().cloned();
-    let text = id.as_ref().and_then(Curriculum::chapter_text).unwrap_or_default();
+    let text = id
+        .as_ref()
+        .and_then(Curriculum::chapter_text)
+        .unwrap_or_default();
     (id, text, true)
 }
 
@@ -101,7 +111,9 @@ impl Scene for ReadScene {
             .border_style(Style::default().fg(self.theme.dim))
             .title(Span::styled(
                 title_text,
-                Style::default().fg(self.theme.accent_violet).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(self.theme.accent_violet)
+                    .add_modifier(Modifier::BOLD),
             ));
         let inner = block.inner(body);
         frame.render_widget(block, body);
@@ -113,15 +125,22 @@ impl Scene for ReadScene {
                 if let Some(rest) = l.strip_prefix("# ") {
                     Line::from(Span::styled(
                         rest.to_string(),
-                        Style::default().fg(self.theme.accent_pink).add_modifier(Modifier::BOLD),
+                        Style::default()
+                            .fg(self.theme.accent_pink)
+                            .add_modifier(Modifier::BOLD),
                     ))
                 } else if let Some(rest) = l.strip_prefix("## ") {
                     Line::from(Span::styled(
                         rest.to_string(),
-                        Style::default().fg(self.theme.accent_mint).add_modifier(Modifier::BOLD),
+                        Style::default()
+                            .fg(self.theme.accent_mint)
+                            .add_modifier(Modifier::BOLD),
                     ))
                 } else {
-                    Line::from(Span::styled(l.to_string(), Style::default().fg(self.theme.fg)))
+                    Line::from(Span::styled(
+                        l.to_string(),
+                        Style::default().fg(self.theme.fg),
+                    ))
                 }
             })
             .collect();
@@ -148,7 +167,12 @@ impl ReadScene {
         self.finished = true;
         if let (Some(c), Some(id)) = (app.creature_mut(), self.chapter.clone()) {
             c.chapters_read.insert(id.clone());
-            apply_care(c, CareAction::Read { chapter_seen_before: self.seen_before });
+            apply_care(
+                c,
+                CareAction::Read {
+                    chapter_seen_before: self.seen_before,
+                },
+            );
         }
         if !self.seen_before {
             app.say("read_new");

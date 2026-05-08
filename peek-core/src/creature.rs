@@ -76,7 +76,8 @@ impl Creature {
         if let Some(next) = self.stage.next() {
             self.stage = next;
             self.stage_advanced_at = Some(now);
-            let mut rng = ChaCha20Rng::seed_from_u64(self.seed.wrapping_mul((next.index() as u64) + 1));
+            let mut rng =
+                ChaCha20Rng::seed_from_u64(self.seed.wrapping_mul((next.index() as u64) + 1));
             let n = rng.gen_range(0u8..=2);
             for _ in 0..n {
                 self.mutations.push(Mutation::roll(&mut rng));
@@ -106,7 +107,10 @@ impl Creature {
         };
 
         self.refresh_mood(now);
-        TickOutcome { died, advanced: false }
+        TickOutcome {
+            died,
+            advanced: false,
+        }
     }
 }
 

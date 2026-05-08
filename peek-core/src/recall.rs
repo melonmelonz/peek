@@ -49,7 +49,7 @@ impl RecallRecord {
 }
 
 /// Records due at or before `now`, ordered by `next_due` ascending.
-pub fn due_now<'a>(records: &'a [RecallRecord], now: DateTime<Utc>) -> Vec<&'a RecallRecord> {
+pub fn due_now(records: &[RecallRecord], now: DateTime<Utc>) -> Vec<&RecallRecord> {
     let mut due: Vec<&RecallRecord> = records.iter().filter(|r| r.next_due <= now).collect();
     due.sort_by_key(|r| r.next_due);
     due
@@ -97,7 +97,10 @@ mod tests {
         b.update(true, t);
         let recs = vec![a.clone(), b.clone()];
         let due = due_now(&recs, t);
-        assert!(due.is_empty(), "freshly-correct records should not be due immediately");
+        assert!(
+            due.is_empty(),
+            "freshly-correct records should not be due immediately"
+        );
         let later = t + Duration::hours(48);
         let recs = vec![a, b];
         let due = due_now(&recs, later);

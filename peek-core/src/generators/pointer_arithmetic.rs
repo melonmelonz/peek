@@ -76,7 +76,12 @@ impl QuestionGenerator for PointerArithmeticGen {
             "given:\n{shape}\n\na pointer p: *const Foo holds 0x{base:x}. assuming each field is naturally aligned to its size and there is no trailing padding, what address does &(*p).f{target} resolve to? answer in hex (with or without 0x)."
         );
 
-        let accept = vec![format!("0x{answer:x}"), format!("{answer:x}"), format!("0x{answer:X}"), format!("{answer:X}")];
+        let accept = vec![
+            format!("0x{answer:x}"),
+            format!("{answer:x}"),
+            format!("0x{answer:X}"),
+            format!("{answer:X}"),
+        ];
 
         Question {
             id: QuestionId::new(format!("gen-ptr-{}", rng.next_u64())),
@@ -106,7 +111,10 @@ mod tests {
             if let QuestionKind::FillBlank { accept, .. } = &q.kind {
                 // First accept is 0x{lower-hex} which is the canonical answer.
                 let canonical = accept[0].clone();
-                assert!(q.evaluate(&canonical).correct, "seed {seed} canonical {canonical}");
+                assert!(
+                    q.evaluate(&canonical).correct,
+                    "seed {seed} canonical {canonical}"
+                );
             } else {
                 panic!("expected FillBlank");
             }

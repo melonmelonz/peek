@@ -27,7 +27,10 @@ pub struct DeathScene {
 
 impl DeathScene {
     pub fn new(theme: Theme, app: &App) -> Self {
-        Self { theme, last_dead: app.creature().cloned() }
+        Self {
+            theme,
+            last_dead: app.creature().cloned(),
+        }
     }
 }
 
@@ -74,7 +77,9 @@ impl Scene for DeathScene {
             .border_style(Style::default().fg(self.theme.warn))
             .title(Span::styled(
                 " return to the void ",
-                Style::default().fg(self.theme.warn).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(self.theme.warn)
+                    .add_modifier(Modifier::BOLD),
             ));
         let inner = block.inner(body);
         frame.render_widget(block, body);
@@ -83,7 +88,9 @@ impl Scene for DeathScene {
         if let Some(c) = &self.last_dead {
             lines.push(Line::from(Span::styled(
                 c.true_name.clone(),
-                Style::default().fg(self.theme.accent_violet).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(self.theme.accent_violet)
+                    .add_modifier(Modifier::BOLD),
             )));
             lines.push(Line::from(Span::styled(
                 format!("final stage: {}", c.stage.name()),
@@ -98,18 +105,24 @@ impl Scene for DeathScene {
         if let Some(line) = &app.current_dialogue {
             lines.push(Line::from(Span::styled(
                 line.clone(),
-                Style::default().fg(self.theme.fg).add_modifier(Modifier::ITALIC),
+                Style::default()
+                    .fg(self.theme.fg)
+                    .add_modifier(Modifier::ITALIC),
             )));
         } else {
             lines.push(Line::from(Span::styled(
                 "the creature has returned to the void.",
-                Style::default().fg(self.theme.fg).add_modifier(Modifier::ITALIC),
+                Style::default()
+                    .fg(self.theme.fg)
+                    .add_modifier(Modifier::ITALIC),
             )));
         }
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
             "press [b] to bury and begin again.   [Q] quit.",
-            Style::default().fg(self.theme.accent_pink).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(self.theme.accent_pink)
+                .add_modifier(Modifier::BOLD),
         )));
 
         let p = Paragraph::new(lines).wrap(Wrap { trim: false });

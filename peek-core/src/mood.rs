@@ -49,19 +49,31 @@ mod tests {
 
     #[test]
     fn ravenous_when_hungry() {
-        let s = Stats { nourishment: 0.1, tether: 1.0, lucidity: 0.5 };
+        let s = Stats {
+            nourishment: 0.1,
+            tether: 1.0,
+            lucidity: 0.5,
+        };
         assert_eq!(Mood::from_stats(&s, false), Mood::Ravenous);
     }
 
     #[test]
     fn drifting_when_low_tether() {
-        let s = Stats { nourishment: 0.5, tether: 0.1, lucidity: 0.5 };
+        let s = Stats {
+            nourishment: 0.5,
+            tether: 0.1,
+            lucidity: 0.5,
+        };
         assert_eq!(Mood::from_stats(&s, false), Mood::Drifting);
     }
 
     #[test]
     fn lucid_when_high_lucidity_and_other_stats_fine() {
-        let s = Stats { nourishment: 0.5, tether: 0.5, lucidity: 0.9 };
+        let s = Stats {
+            nourishment: 0.5,
+            tether: 0.5,
+            lucidity: 0.9,
+        };
         assert_eq!(Mood::from_stats(&s, false), Mood::Lucid);
     }
 

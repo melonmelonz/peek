@@ -83,7 +83,8 @@ fn run_loop(
             let ev = event::read()?;
             // Allow Ctrl+C anywhere.
             if let Event::Key(k) = &ev {
-                if k.modifiers.contains(crossterm::event::KeyModifiers::CONTROL)
+                if k.modifiers
+                    .contains(crossterm::event::KeyModifiers::CONTROL)
                     && matches!(k.code, crossterm::event::KeyCode::Char('c'))
                 {
                     break;
@@ -130,7 +131,11 @@ fn build_scene(id: SceneId, theme: Theme, app: &mut App) -> Box<dyn Scene> {
     match id {
         SceneId::Idle => Box::new(IdleScene::new(theme)),
         SceneId::Hatch => Box::new(HatchScene::new(theme)),
-        SceneId::Quiz => Box::new(QuizScene::new(theme, peek_tui::scenes::quiz::QuizMode::Feed, app)),
+        SceneId::Quiz => Box::new(QuizScene::new(
+            theme,
+            peek_tui::scenes::quiz::QuizMode::Feed,
+            app,
+        )),
         SceneId::Read => Box::new(ReadScene::new(theme, app)),
         SceneId::Death => Box::new(DeathScene::new(theme, app)),
     }

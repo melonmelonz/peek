@@ -13,12 +13,12 @@ pub fn run() -> anyhow::Result<()> {
     };
     let outcome = creature.tick(Utc::now());
     let stage_name = creature.stage.name();
-    state.save(&path).map_err(|e| anyhow::anyhow!("save: {e}"))?;
+    state
+        .save(&path)
+        .map_err(|e| anyhow::anyhow!("save: {e}"))?;
     let died = outcome.died;
     let starting_threshold = matches!(state.creature.as_ref().map(|c| c.stage), Some(Stage::Egg));
     let _ = starting_threshold;
-    println!(
-        "peek: tick applied. stage={stage_name} died={died}",
-    );
+    println!("peek: tick applied. stage={stage_name} died={died}",);
     Ok(())
 }

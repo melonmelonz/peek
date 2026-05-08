@@ -56,7 +56,9 @@ impl App {
     }
 
     pub fn save(&self) -> anyhow::Result<()> {
-        self.state.save(&self.state_path).map_err(|e| anyhow::anyhow!("save state: {e}"))
+        self.state
+            .save(&self.state_path)
+            .map_err(|e| anyhow::anyhow!("save state: {e}"))
     }
 
     pub fn creature(&self) -> Option<&Creature> {
@@ -68,7 +70,9 @@ impl App {
     }
 
     pub fn stats(&self) -> Stats {
-        self.creature().map(|c| c.stats).unwrap_or_else(Stats::new_full)
+        self.creature()
+            .map(|c| c.stats)
+            .unwrap_or_else(Stats::new_full)
     }
 
     /// Pick a dialogue line for the given event key. `stage` is matched

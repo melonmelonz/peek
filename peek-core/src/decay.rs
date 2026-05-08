@@ -48,12 +48,20 @@ mod tests {
         let mut s = Stats::new_full();
         let r = DecayRates::DEFAULT;
         apply_decay(&mut s, r, (r.nourishment_h as f64) * 3600.0);
-        assert!((s.nourishment - 0.5).abs() < 0.001, "nourishment={}", s.nourishment);
+        assert!(
+            (s.nourishment - 0.5).abs() < 0.001,
+            "nourishment={}",
+            s.nourishment
+        );
     }
 
     #[test]
     fn very_long_decay_floors_at_zero() {
-        let mut s = Stats { nourishment: 0.01, tether: 0.01, lucidity: 0.01 };
+        let mut s = Stats {
+            nourishment: 0.01,
+            tether: 0.01,
+            lucidity: 0.01,
+        };
         apply_decay(&mut s, DecayRates::DEFAULT, 1_000_000.0);
         assert!(s.nourishment >= 0.0);
         assert!(s.tether >= 0.0);

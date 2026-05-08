@@ -120,7 +120,11 @@ mod tests {
     #[test]
     fn chapters_present() {
         let ids = Curriculum::chapter_ids();
-        assert!(ids.len() >= 3, "expected at least three chapters, got {}", ids.len());
+        assert!(
+            ids.len() >= 3,
+            "expected at least three chapters, got {}",
+            ids.len()
+        );
         for id in &ids {
             let body = Curriculum::chapter_text(id).expect("chapter file should exist");
             assert!(!body.trim().is_empty(), "chapter {} is empty", id.as_str());
@@ -130,12 +134,21 @@ mod tests {
     #[test]
     fn question_bank_loads_and_self_validates() {
         let qs = QuestionBank::load().expect("bank parses");
-        assert!(qs.len() >= 18, "expected >= 18 seeded questions, got {}", qs.len());
+        assert!(
+            qs.len() >= 18,
+            "expected >= 18 seeded questions, got {}",
+            qs.len()
+        );
         for q in &qs {
             // Every seeded question must validate against its documented-correct answer.
             let canonical = canonical_answer(q);
             let res = q.evaluate(&canonical);
-            assert!(res.correct, "seeded question {} did not accept its canonical answer {:?}", q.id.as_str(), canonical);
+            assert!(
+                res.correct,
+                "seeded question {} did not accept its canonical answer {:?}",
+                q.id.as_str(),
+                canonical
+            );
         }
     }
 
@@ -148,14 +161,20 @@ mod tests {
                 accept.first().cloned().unwrap_or_default()
             }
             peek_core::QuestionKind::ShortNumeric { accept_min, .. } => format!("{}", accept_min),
-            peek_core::QuestionKind::TraceProgram { expected_output, .. } => expected_output.clone(),
+            peek_core::QuestionKind::TraceProgram {
+                expected_output, ..
+            } => expected_output.clone(),
         }
     }
 
     #[test]
     fn dialogue_loads_and_covers_required_events() {
         let lines = DialogueLines::load().expect("dialogue parses");
-        assert!(lines.len() >= 30, "expected >= 30 dialogue lines, got {}", lines.len());
+        assert!(
+            lines.len() >= 30,
+            "expected >= 30 dialogue lines, got {}",
+            lines.len()
+        );
         let required = [
             "hatch",
             "feed_correct",
@@ -205,7 +224,10 @@ mod tests {
             let mut rng = rand_chacha::ChaCha20Rng::seed_from_u64(seed);
             for d in 1u8..=5 {
                 let q = reg.pick(&mut rng, d);
-                assert!(q.is_some(), "registry returned None for difficulty {d} seed {seed}");
+                assert!(
+                    q.is_some(),
+                    "registry returned None for difficulty {d} seed {seed}"
+                );
             }
         }
     }

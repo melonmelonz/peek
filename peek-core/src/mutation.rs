@@ -37,7 +37,9 @@ impl Mutation {
         ];
         let pick = POOL.choose(rng).copied().unwrap_or(Mutation::NoneAtAll);
         if matches!(pick, Mutation::NoneAtAll) && rng.gen_bool(0.4) {
-            Mutation::Tendril { count: rng.gen_range(1..=3) }
+            Mutation::Tendril {
+                count: rng.gen_range(1..=3),
+            }
         } else {
             pick
         }
