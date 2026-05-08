@@ -1,0 +1,17 @@
+[package]
+name = "peek-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "PEEK core domain logic: creature, decay, recall scheduling, question types."
+
+[dependencies]
+serde = { workspace = true }
+ron = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+rand = { workspace = true }
+rand_chacha = { workspace = true }
+thiserror = { workspace = true }

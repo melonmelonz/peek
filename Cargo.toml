@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = ["peek-core", "peek-content", "peek-tui", "peek-cli"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Penn Porterfield"]
+repository = "https://github.com/melonmelonz/peek"
+description = "PEEK Examines Embedded Kernels: an eldritch tamagotchi TUI for offline systems-curriculum study."
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+ron = "0.8"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+rand = "0.8"
+rand_chacha = "0.3"
+ratatui = "0.27"
+crossterm = "0.27"
+rust-embed = "8"
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+thiserror = "1"
+pulldown-cmark = "0.10"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

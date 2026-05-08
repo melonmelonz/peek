@@ -1,0 +1,18 @@
+[package]
+name = "peek-tui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "PEEK TUI scenes and widgets (ratatui)."
+
+[dependencies]
+peek-core = { path = "../peek-core" }
+peek-content = { path = "../peek-content" }
+ratatui = { workspace = true }
+crossterm = { workspace = true }
+chrono = { workspace = true }
+rand = { workspace = true }
+rand_chacha = { workspace = true }
+anyhow = { workspace = true }

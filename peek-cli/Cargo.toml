@@ -1,0 +1,24 @@
+[package]
+name = "peek-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "PEEK static-musl CLI binary."
+
+[[bin]]
+name = "peek"
+path = "src/main.rs"
+
+[dependencies]
+peek-core = { path = "../peek-core" }
+peek-content = { path = "../peek-content" }
+peek-tui = { path = "../peek-tui" }
+clap = { workspace = true }
+anyhow = { workspace = true }
+chrono = { workspace = true }
+ron = { workspace = true }
+crossterm = { workspace = true }
+ratatui = { workspace = true }
+rand = { workspace = true }
