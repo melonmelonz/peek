@@ -36,6 +36,12 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
+      # rust-toolchain.toml pins the channel; ensure the cross target is
+      # actually installed against the pinned toolchain (not just stable).
+      - name: Add target to pinned toolchain
+        if: ${{ !contains(matrix.target, 'musl') }}
+        run: rustup target add ${{ matrix.target }}
+
       - name: Install cross (musl targets)
         if: contains(matrix.target, 'musl')
         run: cargo install cross --locked
