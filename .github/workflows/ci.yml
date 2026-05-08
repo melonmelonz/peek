@@ -41,6 +41,11 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
+      # rust-toolchain.toml pins the channel; ensure wasm32-unknown-unknown
+      # is actually installed against the pinned toolchain (not just stable).
+      - name: Add wasm32 target to pinned toolchain
+        run: rustup target add wasm32-unknown-unknown
+
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
         with:
