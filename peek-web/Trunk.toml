@@ -1,6 +1,9 @@
 [build]
 target = "index.html"
 release = false
+# Use relative URLs so the dist works whether it's served at the site root
+# or under a subpath like /next-chapter/peek/ (the goolz embed).
+public_url = "./"
 
 [serve]
 address = "127.0.0.1"
