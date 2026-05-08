@@ -63,8 +63,7 @@ impl QuestionGenerator for SyscallTraceGen {
             Scene::MmapMunmap => {
                 let len_kb = rng.gen_range(1u32..16);
                 let prompt = format!(
-                    "a program calls mmap(NULL, {} * 1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) and writes through the returned pointer, then calls munmap on it. what does the second access through that pointer do?",
-                    len_kb
+                    "a program calls mmap(NULL, {len_kb} * 1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) and writes through the returned pointer, then calls munmap on it. what does the second access through that pointer do?",
                 );
                 let options = vec![
                     "returns the previously written value".into(),

@@ -3,9 +3,9 @@
 
 use crate::app::App;
 use crate::chrome::{render_footer, render_stats, render_title, split_layout};
+use crate::input::{InputEvent, Key};
 use crate::scene::{Scene, SceneAction, SceneId};
 use crate::theme::Theme;
-use crossterm::event::{Event, KeyCode};
 use peek_content::Curriculum;
 use peek_core::{apply_care, chapter::ChapterId, CareAction};
 use ratatui::layout::Rect;
@@ -72,28 +72,28 @@ impl Scene for ReadScene {
         SceneId::Read
     }
 
-    fn handle(&mut self, ev: &Event, app: &mut App) -> SceneAction {
-        if let Event::Key(k) = ev {
-            match k.code {
-                KeyCode::Char('Q') => return SceneAction::Quit,
-                KeyCode::Esc | KeyCode::Char('q') => {
-                    self.finish(app);
-                    return SceneAction::Goto(SceneId::Idle);
-                }
-                KeyCode::Char(' ') | KeyCode::Down | KeyCode::PageDown => {
-                    self.scroll = self.scroll.saturating_add(8);
-                }
-                KeyCode::Up | KeyCode::PageUp => {
-                    self.scroll = self.scroll.saturating_sub(8);
-                }
-                KeyCode::Enter => {
-                    self.finish(app);
-                    return SceneAction::Goto(SceneId::Idle);
-                }
-                _ => {}
+    fn handle(&mut self, ev: &InputEvent, app: &mut App) -> SceneAction {
+        let InputEvent::Key(k) = ev;
+        match k {
+            Key::Char('Q') => SceneAction::Quit,
+            Key::Esc | Key::Char('q') => {
+                self.finish(app);
+                SceneAction::Goto(SceneId::Idle)
             }
+            Key::Char(' ') | Key::Down | Key::PageDown => {
+                self.scroll = self.scroll.saturating_add(8);
+                SceneAction::Stay
+            }
+            Key::Up | Key::PageUp => {
+                self.scroll = self.scroll.saturating_sub(8);
+                SceneAction::Stay
+            }
+            Key::Enter => {
+                self.finish(app);
+                SceneAction::Goto(SceneId::Idle)
+            }
+            _ => SceneAction::Stay,
         }
-        SceneAction::Stay
     }
 
     fn render(&self, frame: &mut Frame, area: Rect, app: &App) {

@@ -2,10 +2,10 @@
 
 use crate::app::App;
 use crate::chrome::{render_footer, render_stats, render_title, split_layout};
+use crate::input::{InputEvent, Key};
 use crate::scene::{Scene, SceneAction, SceneId};
 use crate::sprite::SpriteWidget;
 use crate::theme::Theme;
-use crossterm::event::{Event, KeyCode};
 use peek_content::SpriteSet;
 use peek_core::{apply_care, CareAction};
 use ratatui::layout::{Constraint, Direction, Layout, Rect};
@@ -29,27 +29,26 @@ impl Scene for IdleScene {
         SceneId::Idle
     }
 
-    fn handle(&mut self, ev: &Event, app: &mut App) -> SceneAction {
-        if let Event::Key(k) = ev {
-            match k.code {
-                KeyCode::Char('Q') => return SceneAction::Quit,
-                KeyCode::Char('q') => return SceneAction::Quit,
-                KeyCode::Char('f') => return SceneAction::Goto(SceneId::Quiz),
-                KeyCode::Char('z') => return SceneAction::Goto(SceneId::Quiz),
-                KeyCode::Char('t') => {
-                    if let Some(c) = app.creature_mut() {
-                        apply_care(c, CareAction::Tend);
-                    }
-                    app.say("tend");
-                    let _ = app.save();
+    fn handle(&mut self, ev: &InputEvent, app: &mut App) -> SceneAction {
+        let InputEvent::Key(k) = ev;
+        match k {
+            Key::Char('Q') | Key::Char('q') => return SceneAction::Quit,
+            Key::Char('f') | Key::Char('z') => return SceneAction::Goto(SceneId::Quiz),
+            Key::Char('t') => {
+                if let Some(c) = app.creature_mut() {
+                    apply_care(c, CareAction::Tend);
                 }
-                KeyCode::Char('r') => return SceneAction::Goto(SceneId::Read),
-                KeyCode::Char('?') => {
-                    app.current_dialogue =
-                        Some("f feed quiz   t tend   r read   z drill   q/Q quit".into());
-                }
-                _ => {}
+                app.say("tend");
+                let _ = app.save();
             }
+            Key::Char('r') => return SceneAction::Goto(SceneId::Read),
+            Key::Char('d') => return SceneAction::Goto(SceneId::Demo),
+            Key::Char('i') => return SceneAction::Goto(SceneId::Intro),
+            Key::Char('?') => {
+                app.current_dialogue =
+                    Some("f feed   t tend   r read   z drill   d demo   i intro   q/Q quit".into());
+            }
+            _ => {}
         }
         SceneAction::Stay
     }

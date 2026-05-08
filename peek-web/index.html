@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PEEK — Examines Embedded Kernels</title>
+    <meta
+      name="description"
+      content="An eldritch tamagotchi TUI for offline systems study, in the browser."
+    />
+    <meta name="color-scheme" content="dark" />
+    <link data-trunk rel="rust" data-wasm-opt="0" />
+    <link data-trunk rel="copy-file" href="style.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="peek-banner">
+      <span class="peek-banner-title">PEEK</span>
+      <span class="peek-banner-sub">examines embedded kernels</span>
+      <button id="peek-reset" type="button" title="bury everything and start fresh">
+        reset
+      </button>
+    </header>
+    <main>
+      <div id="peek-keys" class="peek-help">
+        <span class="peek-key">f</span> feed &nbsp;
+        <span class="peek-key">t</span> tend &nbsp;
+        <span class="peek-key">r</span> read &nbsp;
+        <span class="peek-key">z</span> drill &nbsp;
+        <span class="peek-key">d</span> demo &nbsp;
+        <span class="peek-key">?</span> help
+      </div>
+      <!-- ratzilla mounts the terminal here. The id is the ratzilla default. -->
+      <div id="grid"></div>
+    </main>
+    <footer class="peek-footer">
+      built with <a href="https://github.com/orhun/ratzilla" target="_blank" rel="noopener">ratzilla</a>
+      &middot; <a href="https://github.com/melonmelonz/peek" target="_blank" rel="noopener">source</a>
+      &middot; static-musl native binaries on
+      <a href="https://github.com/melonmelonz/peek/releases" target="_blank" rel="noopener">releases</a>
+    </footer>
+    <script type="module">
+      // Wire the reset button after the wasm bundle exposes peek_reset.
+      window.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("peek-reset");
+        btn.addEventListener("click", async () => {
+          if (!confirm("clear PEEK state and memorials?")) return;
+          // Wait for the wasm bindings module to attach to window.wasmBindings.
+          // Trunk attaches it lazily; if the user clicks before the bundle
+          // initializes, fall back to clearing localStorage by hand.
+          const bindings = window.wasmBindings;
+          if (bindings && typeof bindings.peek_reset === "function") {
+            bindings.peek_reset();
+          } else {
+            try {
+              localStorage.removeItem("peek/state");
+              localStorage.removeItem("peek/memorials");
+            } catch (_) {}
+          }
+          location.reload();
+        });
+      });
+    </script>
+  </body>
+</html>

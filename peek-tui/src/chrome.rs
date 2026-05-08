@@ -243,7 +243,7 @@ impl Widget for NeonBar<'_> {
             if x >= inner.x + inner.width || row >= inner.y + inner.height {
                 break;
             }
-            let cell = buf.get_mut(x, row);
+            let cell = &mut buf[(x, row)];
             if i < full_cells {
                 let style = if i == shimmer_at {
                     Style::default()
@@ -280,7 +280,7 @@ impl Widget for NeonBar<'_> {
             if label_y >= inner.y + inner.height {
                 break;
             }
-            let cell = buf.get_mut(x, label_y);
+            let cell = &mut buf[(x, label_y)];
             cell.set_char(*c);
             cell.set_style(Style::default().fg(self.color).add_modifier(Modifier::DIM));
         }

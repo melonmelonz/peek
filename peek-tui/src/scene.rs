@@ -1,17 +1,19 @@
 //! Scene trait and the SceneAction return type.
 
 use crate::app::App;
-use crossterm::event::Event;
+use crate::input::InputEvent;
 use ratatui::layout::Rect;
 use ratatui::Frame;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SceneId {
+    Intro,
     Idle,
     Hatch,
     Quiz,
     Read,
     Death,
+    Demo,
 }
 
 pub enum SceneAction {
@@ -22,7 +24,7 @@ pub enum SceneAction {
 
 pub trait Scene {
     fn id(&self) -> SceneId;
-    fn handle(&mut self, ev: &Event, app: &mut App) -> SceneAction;
+    fn handle(&mut self, ev: &InputEvent, app: &mut App) -> SceneAction;
     /// Animation tick. Called every ~100ms even when no key was pressed.
     fn tick(&mut self, _app: &mut App) -> SceneAction {
         SceneAction::Stay

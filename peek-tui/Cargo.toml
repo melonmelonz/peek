@@ -10,8 +10,7 @@ description = "PEEK TUI scenes and widgets (ratatui)."
 [dependencies]
 peek-core = { path = "../peek-core" }
 peek-content = { path = "../peek-content" }
-ratatui = { workspace = true }
-crossterm = { workspace = true }
+ratatui = { version = "0.29", default-features = false }
 chrono = { workspace = true }
 rand = { workspace = true }
 rand_chacha = { workspace = true }

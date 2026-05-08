@@ -7,3 +7,6 @@
 *.swp
 .superpowers/
 Cargo.lock.bak
+
+# Trunk build output (generated; CI builds and uploads as release artifact)
+peek-web/dist/

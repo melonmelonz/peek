@@ -62,8 +62,25 @@ Memorials append to `~/.local/state/peek/memorials.ron`.
 | `t` | tend (steady the tether)                     |
 | `r` | read a chapter together                      |
 | `z` | drill (procedurally generated questions)     |
+| `d` | demo (cycle stages/moods/mutations, no save) |
+| `i` | replay the intro                             |
 | `?` | help                                         |
 | `Q` | quit                                         |
+
+### Demo scene keys
+
+The demo scene snapshots the creature on entry and restores it on exit
+unless you press `Enter`, so you can show off without disturbing your run.
+
+| key      | action                                  |
+|----------|-----------------------------------------|
+| `1`–`6`  | jump straight to a stage                |
+| `←`/`→`  | step stages                             |
+| `↑`/`↓`  | cycle moods                             |
+| `m`      | roll a fresh mutation                   |
+| `a`      | autoplay (cycle stage every few ticks)  |
+| `Enter`  | apply the showcase to the live creature |
+| `b`/`Esc`| discard and go back to idle             |
 
 ## How it works
 
@@ -85,13 +102,45 @@ and on each `peek tick`. Cron is the recommended scheduler:
 */5 * * * * /usr/local/bin/peek tick >/dev/null 2>&1
 ```
 
+## Run in the browser
+
+PEEK has a wasm build that runs the same scenes in the browser via
+[ratzilla](https://github.com/orhun/ratzilla). State lives in
+`localStorage` (`peek/state` and `peek/memorials`), so the creature
+persists per-browser without a server.
+
+Local development:
+
+```sh
+# one-time
+cargo install --locked trunk
+rustup target add wasm32-unknown-unknown
+
+# serve at http://127.0.0.1:8080
+cd peek-web
+trunk serve
+```
+
+Production bundle:
+
+```sh
+cd peek-web
+trunk build --release
+# outputs static files to peek-web/dist/
+```
+
+The `dist/` directory is a self-contained static site — drop it on any
+static host. The browser embed at goolz.org/next-chapter loads exactly
+this bundle inside a Win95-style window.
+
 ## Workspace layout
 
 ```
 peek-core/      # domain types, decay, care, recall (SM-2 lite), generators
 peek-content/   # embedded curriculum, question bank, dialogue, sprites
-peek-tui/       # ratatui scenes, neon chrome, sprite renderer
-peek-cli/       # clap entrypoint + subcommands
+peek-tui/       # ratatui scenes, neon chrome, sprite renderer (backend-agnostic)
+peek-cli/       # clap entrypoint + subcommands (native, crossterm)
+peek-web/       # wasm32 cdylib bundled by Trunk, ratzilla DOM backend
 ```
 
 Roughly 40 unit tests in `peek-core` and 5 in `peek-content`. Generators

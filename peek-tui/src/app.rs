@@ -4,13 +4,17 @@
 use peek_content::{default_generators, DialogueLine, DialogueLines, QuestionBank};
 use peek_core::{
     generators::GeneratorRegistry,
+    memorial::Memorial,
     question::Question,
-    state::{default_memorial_path, default_state_path, DialogueEvent, PeekState},
+    state::{DialogueEvent, PeekState},
     Creature, Stage, Stats,
 };
 use rand::SeedableRng;
 use rand_chacha::ChaCha20Rng;
 use std::path::PathBuf;
+
+#[cfg(not(target_arch = "wasm32"))]
+use peek_core::state::{default_memorial_path, default_state_path};
 
 pub enum AppEvent {
     Dialogue(String),
@@ -30,13 +34,30 @@ pub struct App {
     pub frame_idx: u8,
     pub current_dialogue: Option<String>,
     pub events: Vec<AppEvent>,
+    /// Memorials that scenes have produced but not yet persisted. The
+    /// runtime is expected to drain this and write them through whichever
+    /// storage layer the backend uses (filesystem on native, localStorage
+    /// in the browser).
+    pub pending_memorials: Vec<Memorial>,
 }
 
 impl App {
+    /// Native bootstrap: read state from the XDG state path.
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn boot() -> anyhow::Result<Self> {
         let state_path = default_state_path();
         let memorial_path = default_memorial_path();
         let state = PeekState::load(&state_path)?;
+        Self::new(state, state_path, memorial_path)
+    }
+
+    /// Backend-agnostic constructor: state is provided by the caller.
+    /// Used by the wasm runtime which loads from `localStorage` instead.
+    pub fn new(
+        state: PeekState,
+        state_path: PathBuf,
+        memorial_path: PathBuf,
+    ) -> anyhow::Result<Self> {
         let questions = QuestionBank::load()?;
         let dialogue = DialogueLines::load()?;
         let generators = default_generators();
@@ -52,7 +73,13 @@ impl App {
             frame_idx: 0,
             current_dialogue: None,
             events: Vec::new(),
+            pending_memorials: Vec::new(),
         })
+    }
+
+    /// Drain any memorials produced by scenes since the last call.
+    pub fn take_pending_memorials(&mut self) -> Vec<Memorial> {
+        std::mem::take(&mut self.pending_memorials)
     }
 
     pub fn save(&self) -> anyhow::Result<()> {

@@ -8,10 +8,10 @@
 
 use crate::app::App;
 use crate::chrome::{render_footer, render_stats, render_title, split_layout};
+use crate::input::{InputEvent, Key};
 use crate::scene::{Scene, SceneAction, SceneId};
 use crate::sprite::SpriteWidget;
 use crate::theme::Theme;
-use crossterm::event::{Event, KeyCode};
 use peek_content::SpriteSet;
 use peek_core::Stage;
 use ratatui::layout::Rect;
@@ -106,14 +106,12 @@ impl Scene for HatchScene {
         SceneId::Hatch
     }
 
-    fn handle(&mut self, ev: &Event, _app: &mut App) -> SceneAction {
-        if let Event::Key(k) = ev {
-            if matches!(k.code, KeyCode::Char('Q') | KeyCode::Char('q')) {
-                return SceneAction::Quit;
-            }
-            if matches!(k.code, KeyCode::Enter | KeyCode::Char(' ')) {
-                self.progress = FRAMES_TOTAL;
-            }
+    fn handle(&mut self, ev: &InputEvent, _app: &mut App) -> SceneAction {
+        let InputEvent::Key(k) = ev;
+        match k {
+            Key::Char('Q') | Key::Char('q') => return SceneAction::Quit,
+            Key::Enter | Key::Char(' ') => self.progress = FRAMES_TOTAL,
+            _ => {}
         }
         SceneAction::Stay
     }

@@ -58,11 +58,11 @@ impl Widget for SpriteWidget<'_> {
                         (41, _) => (' ', Style::default().fg(self.theme.dim)),
                         _ => (' ', Style::default().fg(self.theme.dim)),
                     };
-                    let cell = buf.get_mut(area.x + x, area.y + y);
+                    let cell = &mut buf[(area.x + x, area.y + y)];
                     cell.set_char(ch);
                     cell.set_style(style.bg(bg));
                 } else {
-                    let cell = buf.get_mut(area.x + x, area.y + y);
+                    let cell = &mut buf[(area.x + x, area.y + y)];
                     cell.set_char(' ');
                     cell.set_style(Style::default().bg(bg));
                 }
@@ -105,7 +105,7 @@ impl Widget for SpriteWidget<'_> {
                 if c == ' ' {
                     continue;
                 }
-                let cell = buf.get_mut(x, y);
+                let cell = &mut buf[(x, y)];
                 let style = match c {
                     'o' | 'O' | '@' | '*' | '+' => glow,
                     '~' | 'v' | 'w' | 'W' => mint,
@@ -138,7 +138,7 @@ impl Widget for SpriteWidget<'_> {
                     if x >= area.x + area.width {
                         break;
                     }
-                    let cell = buf.get_mut(x, y);
+                    let cell = &mut buf[(x, y)];
                     cell.set_char(*c);
                     cell.set_style(style);
                 }

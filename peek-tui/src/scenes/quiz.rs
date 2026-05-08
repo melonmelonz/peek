@@ -6,10 +6,10 @@
 
 use crate::app::App;
 use crate::chrome::{render_footer, render_stats, render_title, split_layout};
+use crate::input::{InputEvent, Key};
 use crate::scene::{Scene, SceneAction, SceneId};
 use crate::theme::Theme;
 use chrono::Utc;
-use crossterm::event::{Event, KeyCode};
 use peek_core::{
     apply_care,
     question::{AttemptResult, Question, QuestionKind},
@@ -151,32 +151,32 @@ impl Scene for QuizScene {
         SceneId::Quiz
     }
 
-    fn handle(&mut self, ev: &Event, app: &mut App) -> SceneAction {
-        if let Event::Key(k) = ev {
-            match (self.phase, k.code) {
-                (_, KeyCode::Char('Q')) => return SceneAction::Quit,
-                (_, KeyCode::Esc) => return SceneAction::Goto(SceneId::Idle),
-                (Phase::Asking, KeyCode::Enter) => {
-                    if !self.input.trim().is_empty() {
-                        self.submit(app);
-                    }
+    fn handle(&mut self, ev: &InputEvent, app: &mut App) -> SceneAction {
+        let InputEvent::Key(k) = ev;
+        match (self.phase, k) {
+            (_, Key::Char('Q')) => SceneAction::Quit,
+            (_, Key::Esc) => SceneAction::Goto(SceneId::Idle),
+            (Phase::Asking, Key::Enter) => {
+                if !self.input.trim().is_empty() {
+                    self.submit(app);
                 }
-                (Phase::Asking, KeyCode::Backspace) => {
-                    self.input.pop();
-                }
-                (Phase::Asking, KeyCode::Char(c)) => {
-                    if self.input.len() < 64 {
-                        self.input.push(c);
-                    }
-                }
-                (Phase::Resolved { .. }, KeyCode::Enter)
-                | (Phase::Resolved { .. }, KeyCode::Char(' ')) => {
-                    return SceneAction::Goto(SceneId::Idle);
-                }
-                _ => {}
+                SceneAction::Stay
             }
+            (Phase::Asking, Key::Backspace) => {
+                self.input.pop();
+                SceneAction::Stay
+            }
+            (Phase::Asking, Key::Char(c)) => {
+                if self.input.len() < 64 {
+                    self.input.push(*c);
+                }
+                SceneAction::Stay
+            }
+            (Phase::Resolved { .. }, Key::Enter) | (Phase::Resolved { .. }, Key::Char(' ')) => {
+                SceneAction::Goto(SceneId::Idle)
+            }
+            _ => SceneAction::Stay,
         }
-        SceneAction::Stay
     }
 
     fn render(&self, frame: &mut Frame, area: Rect, app: &App) {

@@ -160,7 +160,7 @@ mod tests {
             peek_core::QuestionKind::FillBlank { accept, .. } => {
                 accept.first().cloned().unwrap_or_default()
             }
-            peek_core::QuestionKind::ShortNumeric { accept_min, .. } => format!("{}", accept_min),
+            peek_core::QuestionKind::ShortNumeric { accept_min, .. } => format!("{accept_min}"),
             peek_core::QuestionKind::TraceProgram {
                 expected_output, ..
             } => expected_output.clone(),
@@ -208,9 +208,7 @@ mod tests {
             for frame in 0..2 {
                 assert!(
                     SpriteSet::frame(stage, mood, frame).is_some(),
-                    "missing sprite for stage={:?} mood={:?} frame={frame}",
-                    stage,
-                    mood
+                    "missing sprite for stage={stage:?} mood={mood:?} frame={frame}"
                 );
             }
         }

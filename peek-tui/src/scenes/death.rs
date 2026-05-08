@@ -5,14 +5,11 @@
 
 use crate::app::App;
 use crate::chrome::{render_footer, render_stats, render_title, split_layout};
+use crate::input::{InputEvent, Key};
 use crate::scene::{Scene, SceneAction, SceneId};
 use crate::theme::Theme;
 use chrono::Utc;
-use crossterm::event::{Event, KeyCode};
-use peek_core::{
-    memorial::{append, Memorial},
-    Creature,
-};
+use peek_core::{memorial::Memorial, Creature};
 use rand::Rng;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
@@ -39,32 +36,30 @@ impl Scene for DeathScene {
         SceneId::Death
     }
 
-    fn handle(&mut self, ev: &Event, app: &mut App) -> SceneAction {
-        if let Event::Key(k) = ev {
-            match k.code {
-                KeyCode::Char('Q') | KeyCode::Char('q') => return SceneAction::Quit,
-                KeyCode::Char('b') => {
-                    if let Some(c) = self.last_dead.clone() {
-                        let m = Memorial {
-                            creature_id: c.id,
-                            true_name: c.true_name.clone(),
-                            born_at: c.born_at,
-                            died_at: Utc::now(),
-                            final_stage: c.stage,
-                            chapters_read: c.chapters_read.len() as u32,
-                        };
-                        let _ = append(&app.memorial_path, m);
-                    }
-                    let seed: u64 = app.rng.gen();
-                    app.state.creature = Some(Creature::hatch(Utc::now(), seed));
-                    app.current_dialogue = None;
-                    let _ = app.save();
-                    return SceneAction::Goto(SceneId::Hatch);
+    fn handle(&mut self, ev: &InputEvent, app: &mut App) -> SceneAction {
+        let InputEvent::Key(k) = ev;
+        match k {
+            Key::Char('Q') | Key::Char('q') => SceneAction::Quit,
+            Key::Char('b') => {
+                if let Some(c) = self.last_dead.clone() {
+                    let m = Memorial {
+                        creature_id: c.id,
+                        true_name: c.true_name.clone(),
+                        born_at: c.born_at,
+                        died_at: Utc::now(),
+                        final_stage: c.stage,
+                        chapters_read: c.chapters_read.len() as u32,
+                    };
+                    app.pending_memorials.push(m);
                 }
-                _ => {}
+                let seed: u64 = app.rng.gen();
+                app.state.creature = Some(Creature::hatch(Utc::now(), seed));
+                app.current_dialogue = None;
+                let _ = app.save();
+                SceneAction::Goto(SceneId::Hatch)
             }
+            _ => SceneAction::Stay,
         }
-        SceneAction::Stay
     }
 
     fn render(&self, frame: &mut Frame, area: Rect, app: &App) {

@@ -6,11 +6,15 @@
 
 pub mod app;
 pub mod chrome;
+pub mod input;
 pub mod scene;
+pub mod scene_runner;
 pub mod scenes;
 pub mod sprite;
 pub mod theme;
 
 pub use app::{App, AppEvent};
+pub use input::{InputEvent, Key};
 pub use scene::{Scene, SceneAction, SceneId};
+pub use scene_runner::{RunnerOutcome, SceneRunner};
 pub use theme::Theme;
